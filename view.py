@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.conf import settings
 
 
-def search_tours(request):
+ddef search_tours(request):
     if request.method == 'GET':
         form = SearchTourForm(request.GET)
         if form.is_valid():
@@ -18,24 +18,21 @@ def search_tours(request):
             StartDate = form.cleaned_data['StartDate']
 
             tours = Tour.objects.filter(Q(Country__icontains = Country)|
-                                Q(Type__exact = int(Type))|
-                                Q(Destination__exact = int(Destination))|
-                                Q(StartDate__gte = int(StartDate)))
+                                Q(Type__icontains = Type)|
+                                Q(Destination__icontains = Destination)|
+                                Q(StartDate__gte = StartDate))
 
             return render(request, 'tours/search_tours.html', {
                 'tours': tours,
                 'media_url': settings.MEDIA_URL,
                 'form':form,
             })
-
     else:
         form = SearchTourForm()
 
     tours = Tour.objects.filter(Available = True)
-
-
     return render(request, 'tours/search_tours.html', {
         'tours': tours,
-        # 'media_url': settings.MEDIA_URL,
+        'media_url': settings.MEDIA_URL,
         'form':form,
     })
